@@ -1,9 +1,9 @@
 #include "mainwindow.h"
+#include "msgdlg.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    m_message = new MessageWidget(this);
     m_loadwidget = nullptr;
     m_workerwidget = nullptr;
     m_networkMgr = new QNetworkAccessManager(this);
@@ -16,19 +16,19 @@ MainWindow::~MainWindow() {}
 
 void MainWindow::ShowLoadWidget(){
     if (m_loadwidget == nullptr){
-        m_loadwidget = new LoadWidget(this);
+        m_loadwidget = new WaitDlg(this);
     }
 }
 void MainWindow::CloseLoadWidget(){
     if (m_loadwidget != nullptr){
-        delete m_loadwidget;
+        m_loadwidget->close();
         m_loadwidget = nullptr;
     }
 }
 
 void MainWindow::MessageBox(const QString & msg){
-    m_message->raise();
-    m_message->ShowMsg(msg);
+    auto pmsg = new msgdlg(msg, this);
+    pmsg->show();
 }
 
 void MainWindow::SetUUID(const QString & uuid){
@@ -38,12 +38,12 @@ void MainWindow::SetUUID(const QString & uuid){
 void MainWindow::ToggleWorkForm(){
     m_workerwidget = new WorkerForm(this);
     setCentralWidget(m_workerwidget);
-    delete m_loginwidget;
+    m_loginwidget->deleteLater();
     m_loginwidget = nullptr;
 }
 
 void MainWindow::Post(QString urlpath, const QJsonDocument & jsonReq , int millseconds, std::function<void(QString,QJsonDocument)> callback){
-    QNetworkRequest request(QUrl("https://223.113.128.139/apiv1"+urlpath));
+    QNetworkRequest request(QUrl("http://127.0.0.1:8080"+urlpath));
     request.setTransferTimeout(millseconds);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     if (!m_uuid.isEmpty()){
@@ -77,7 +77,7 @@ void MainWindow::OnLogin(const QString & username, const QString & password){
     QJsonObject json;
     json["username"] = username;
     json["password"] = password;
-    Post("/login", QJsonDocument(json), 5000, [this](QString err, QJsonDocument doc){
+    Post("/login", QJsonDocument(json), 15000, [this](QString err, QJsonDocument doc){
         this->CloseLoadWidget();
         if (!err.isEmpty()){
             this->MessageBox(err);

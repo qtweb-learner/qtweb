@@ -8,9 +8,8 @@
 #include <QNetworkReply>
 #include <functional>
 #include <QJsonDocument>
-#include "loadwidget.h"
+#include "waitdlg.h"
 #include "loginwidget.h"
-#include "messagewidget.h"
 #include "workerform.h"
 
 
@@ -30,10 +29,9 @@ public:
 private slots:
     void OnLogin(const QString & username, const QString & password);
 private:
-    MessageWidget * m_message;
     LoginWidget * m_loginwidget;
     WorkerForm *m_workerwidget;
-    LoadWidget * m_loadwidget;
+    WaitDlg * m_loadwidget;
     QNetworkAccessManager * m_networkMgr;
     QString m_uuid;
 };

@@ -23,12 +23,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(mask
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        loadwidget.h loadwidget.cpp
+        waitdlg.h waitdlg.cpp
         res.qrc
         loginwidget.h loginwidget.cpp loginwidget.ui
 
-        messagewidget.h messagewidget.cpp messagewidget.ui
+
         workerform.h workerform.cpp
+        msgdlg.h msgdlg.cpp msgdlg.ui
 
 
 
